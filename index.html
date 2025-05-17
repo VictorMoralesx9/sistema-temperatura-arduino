@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Control de Temperatura</title>
+  <style>
+    body { font-family: Arial; text-align: center; margin-top: 50px; }
+    button { padding: 10px 20px; font-size: 16px; margin: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Control de Ventilador</h1>
+  <p id="temperature">Temperatura: --°C</p>
+  <button onclick="controlVentilador('on')">Encender</button>
+  <button onclick="controlVentilador('off')">Apagar</button>
+
+  <script>
+    function controlVentilador(action) {
+      fetch(`http://${window.location.hostname}/${action}`)
+        .then(response => console.log("Ventilador: " + action));
+    }
+
+    // Actualizar temperatura cada 2 segundos
+    setInterval(() => {
+      fetch("http://" + window.location.hostname)
+        .then(response => response.text())
+        .then(data => {
+          const temp = data.match(/Temperatura actual: (.*)°C/)[1];
+          document.getElementById("temperature").textContent = `Temperatura: ${temp}°C`;
+        });
+    }, 2000);
+  </script>
+</body>
+</html>
